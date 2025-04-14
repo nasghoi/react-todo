@@ -1,0 +1,12 @@
+services:
+  react-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: react_todo
+    ports:
+      - "3000:80"
+    volumes:
+      - .:/app
+    environment:
+      - NODE_ENV=production
