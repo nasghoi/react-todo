@@ -1,4 +1,4 @@
- # nasghoi
+# nasghoi
 FROM ubuntu:24.04
 
 # Set timezone and suppress prompts
@@ -11,7 +11,6 @@ RUN apt-get update && apt-get install -y \
     gnupg \
     ca-certificates \
     tzdata \
-    nginx \
     nano \
     unzip \
     git && \
@@ -34,28 +33,8 @@ RUN npm install
 # Copy rest of source code
 COPY . .
 
-# Build Vite-based React app
-RUN npm run build
+# Expose Vite development server port
+EXPOSE 5173
 
-# Clear default Nginx HTML files
-RUN rm -rf /var/www/html/*
-
-# Copy Vite build output (dist) to Nginx
-RUN cp -r dist/* /var/www/html/
-
-# Nginx config for SPA routing support
-RUN echo 'server { \
-    listen 80; \
-    server_name localhost; \
-    root /var/www/html; \
-    index index.html; \
-    location / { \
-        try_files $uri $uri/ /index.html; \
-    } \
-}' > /etc/nginx/sites-available/default
-
-# Expose port
-EXPOSE 80
-
-# Start Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Start development server
+CMD ["npm", "run", "dev", "--", "--host"]
